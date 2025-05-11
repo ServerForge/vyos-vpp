@@ -934,9 +934,10 @@
         </node>
       </children>
     </node>
-    <node name="sflow">
+    <node name="sflow" owner="${vyos_conf_scripts_dir}/vpp_sflow.py">
       <properties>
         <help>VPP data-plane sFlow</help>
+        <priority>322</priority>
       </properties>
       <children>
         <node name="interface">
