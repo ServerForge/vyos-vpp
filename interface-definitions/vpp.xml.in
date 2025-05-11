@@ -939,7 +939,7 @@
         <help>VPP data-plane sFlow</help>
       </properties>
       <children>
-        <leafNode name="interface">
+        <node name="interface">
           <properties>
             <help>Interface</help>
           </properties>
@@ -967,7 +967,7 @@
               </properties>
             </leafNode>
           </children>
-        </leafNode>
+        </node>
       </children>
     </node>
     <node name="nat">
