@@ -81,7 +81,7 @@ def verify(config):
         return None
 
     # Verify that all interfaces specified exist in VPP
-    for interface in config['interface'].get('interface', []):
+    for interface in config['interface']:
         if interface not in config['vpp_ifaces']:
             raise ConfigError(f'{interface} must be a VPP interface for sFlow monitoring')
 
@@ -102,30 +102,30 @@ def generate(config):
 
 def apply(config):
     # Initialize VPP control API
-    vpp = VPPControl()
+    vpp = VPPControl(attempts=20, interval=500)
 
     if 'remove' in config:
         # Disable sFlow on all interfaces
-        for interface in config.get('effective', {}).get('interface', {}).get('interface', []):
-            vpp.cli(f'set sflow disable-interface {interface}')
+        for interface in config.get('effective', {}).get('interface', []):
+            vpp.cli_cmd(f'set sflow disable-interface {interface}')
         return None
 
     # Configure sample rate if specified
     if 'sample_rate' in config:
-        vpp.cli(f'set sflow sampling-rate {config["sample_rate"]}')
+        vpp.cli_cmd(f'set sflow sampling-rate {config["sample_rate"]}')
 
     # Configure interfaces
     if 'interface' in config:
         # Enable sFlow on specified interfaces
-        for interface in config['interface'].get('interface', []):
-            vpp.cli(f'set sflow enable-interface {interface}')
+        for interface in config['interface']:
+            vpp.cli_cmd(f'set sflow enable-interface {interface}')
 
         # Disable sFlow on interfaces that were removed from config
-        effective_interfaces = config.get('effective', {}).get('interface', {}).get('interface', [])
+        effective_interfaces = config.get('effective', {}).get('interface', [])
         if effective_interfaces:
             for interface in effective_interfaces:
-                if interface not in config['interface'].get('interface', []):
-                    vpp.cli(f'set sflow disable-interface {interface}')
+                if interface not in config['interface']:
+                    vpp.cli_cmd(f'set sflow disable-interface {interface}')
 
 
 if __name__ == '__main__':

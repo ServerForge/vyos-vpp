@@ -940,26 +940,19 @@
         <priority>322</priority>
       </properties>
       <children>
-        <node name="interface">
+        <leafNode name="interface">
           <properties>
-            <help>Interface</help>
+            <help>Interface name</help>
+            <completionHelp>
+              <script>${vyos_completion_dir}/list_interfaces</script>
+            </completionHelp>
+            <valueHelp>
+              <format>txt</format>
+              <description>Interface name</description>
+            </valueHelp>
+            <multi/>
           </properties>
-          <children>
-            <leafNode name="interface">
-              <properties>
-                <help>Interface name</help>
-                <completionHelp>
-                  <script>${vyos_completion_dir}/list_interfaces</script>
-                </completionHelp>
-                <valueHelp>
-                  <format>txt</format>
-                  <description>Interface name</description>
-                </valueHelp>
-                <multi/>
-              </properties>
-            </leafNode>
-          </children>
-        </node>
+        </leafNode>
         <leafNode name="sample-rate">
           <properties>
             <help>sFlow sample rate</help>
