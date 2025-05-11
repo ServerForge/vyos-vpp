@@ -1,20 +1,20 @@
-#!/usr/bin/env python3
-#
-# Copyright (C) 2025 VyOS Inc.
+# Copyright (C) 2025 VyOS maintainers and contributors
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU General Public License version 2 or later as
+# published by the Free Software Foundation.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License along
-# with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# File: util.py
+# Purpose:
+#   Various common functions for use in build scripts.
 
 from vyos import ConfigError
 from vyos.config import Config
@@ -107,25 +107,25 @@ def apply(config):
     if 'remove' in config:
         # Disable sFlow on all interfaces
         for interface in config.get('effective', {}).get('interface', []):
-            vpp.cli_cmd(f'set sflow disable-interface {interface}')
+            vpp.cli_cmd(f'sflow disable {interface}')
         return None
 
     # Configure sample rate if specified
     if 'sample_rate' in config:
-        vpp.cli_cmd(f'set sflow sampling-rate {config["sample_rate"]}')
+        vpp.cli_cmd(f'sflow sampling-rate {config["sample_rate"]}')
 
     # Configure interfaces
     if 'interface' in config:
         # Enable sFlow on specified interfaces
         for interface in config['interface']:
-            vpp.cli_cmd(f'set sflow enable-interface {interface}')
+            vpp.cli_cmd(f'sflow enable {interface}')
 
         # Disable sFlow on interfaces that were removed from config
         effective_interfaces = config.get('effective', {}).get('interface', [])
         if effective_interfaces:
             for interface in effective_interfaces:
                 if interface not in config['interface']:
-                    vpp.cli_cmd(f'set sflow disable-interface {interface}')
+                    vpp.cli_cmd(f'sflow disable {interface}')
 
 
 if __name__ == '__main__':
