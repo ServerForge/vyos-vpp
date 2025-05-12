@@ -93,6 +93,11 @@ def verify(config):
                 raise ConfigError('sFlow sample rate must be a positive integer')
         except ValueError:
             raise ConfigError('sFlow sample rate must be a valid integer')
+            
+    # Verify that server is defined in the system sflow configuration
+    system_conf = Config()
+    if not system_conf.exists(['system', 'sflow', 'server']):
+        raise ConfigError('sFlow server must be defined under system sflow configuration')
 
 
 def generate(config):
@@ -107,7 +112,7 @@ def apply(config):
     if 'remove' in config:
         # Disable sFlow on all interfaces
         for interface in config.get('effective', {}).get('interface', []):
-            vpp.cli_cmd(f'sflow disable {interface}')
+            vpp.cli_cmd(f'sflow enable-disable {interface} disable')
         return None
 
     # Configure sample rate if specified
@@ -118,14 +123,14 @@ def apply(config):
     if 'interface' in config:
         # Enable sFlow on specified interfaces
         for interface in config['interface']:
-            vpp.cli_cmd(f'sflow enable {interface}')
+            vpp.cli_cmd(f'sflow enable-disable {interface}')
 
         # Disable sFlow on interfaces that were removed from config
         effective_interfaces = config.get('effective', {}).get('interface', [])
         if effective_interfaces:
             for interface in effective_interfaces:
                 if interface not in config['interface']:
-                    vpp.cli_cmd(f'sflow disable {interface}')
+                    vpp.cli_cmd(f'sflow enable-disable {interface} disable')
 
 
 if __name__ == '__main__':
