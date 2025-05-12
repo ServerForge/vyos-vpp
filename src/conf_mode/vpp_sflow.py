@@ -30,7 +30,7 @@ def get_config(config=None) -> dict:
     else:
         conf = Config()
 
-    base = ['vpp', 'sflow']
+    base = ['vpp', 'sflow'] and ['system', 'sflow']
 
     # Get config_dict with default values
     config = conf.get_config_dict(
@@ -95,7 +95,6 @@ def verify(config):
             raise ConfigError('sFlow sample rate must be a valid integer')
             
     # Verify that server is defined in the system sflow configuration
-    system_conf = Config()
     if not system_conf.exists(['system', 'sflow', 'server']):
         raise ConfigError('sFlow server must be defined under system sflow configuration')
 
