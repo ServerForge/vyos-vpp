@@ -30,7 +30,7 @@ def get_config(config=None) -> dict:
     else:
         conf = Config()
 
-    base = ['vpp', 'sflow'] and ['system', 'sflow']
+    base = ['vpp', 'sflow']
 
     # Get config_dict with default values
     config = conf.get_config_dict(
@@ -50,6 +50,17 @@ def get_config(config=None) -> dict:
         get_first_key=True,
         no_tag_node_value_mangle=True,
     )
+
+    # Get system sflow configuration to check for server
+    system_sflow = conf.get_config_dict(
+        ['system', 'sflow'],
+        key_mangling=('-', '_'),
+        get_first_key=True,
+        no_tag_node_value_mangle=True,
+    )
+    
+    if system_sflow:
+        config['system_sflow'] = system_sflow
 
     if not config:
         config['remove'] = True
@@ -94,9 +105,9 @@ def verify(config):
         except ValueError:
             raise ConfigError('sFlow sample rate must be a valid integer')
             
-    # Verify that server is defined in the system sflow configuration
-    if not system_conf.exists(['system', 'sflow', 'server']):
-        raise ConfigError('sFlow server must be defined under system sflow configuration')
+    # Verify that system sflow has enable-vpp defined
+    if 'system_sflow' not in config or 'enable_vpp' not in config.get('system_sflow', {}):
+        raise ConfigError('sFlow enable-vpp must be defined under system sflow configuration')
 
 
 def generate(config):
