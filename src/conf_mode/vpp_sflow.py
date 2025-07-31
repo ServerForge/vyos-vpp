@@ -12,9 +12,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# File: util.py
-# Purpose:
-#   Various common functions for use in build scripts.
 
 from vyos import ConfigError
 from vyos.config import Config
@@ -58,7 +55,7 @@ def get_config(config=None) -> dict:
         get_first_key=True,
         no_tag_node_value_mangle=True,
     )
-    
+
     if system_sflow:
         config['system_sflow'] = system_sflow
 
@@ -104,9 +101,9 @@ def verify(config):
                 raise ConfigError('sFlow sample rate must be a positive integer')
         except ValueError:
             raise ConfigError('sFlow sample rate must be a valid integer')
-            
+
     # Verify that system sflow has enable-vpp defined
-    if 'system_sflow' not in config or 'enable_vpp' not in config.get('system_sflow', {}):
+    if 'system_sflow' not in config or 'vpp' not in config.get('system_sflow', {}):
         raise ConfigError('sFlow enable-vpp must be defined under system sflow configuration')
 
 
