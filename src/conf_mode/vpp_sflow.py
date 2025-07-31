@@ -91,7 +91,9 @@ def verify(config):
     # Verify that all interfaces specified exist in VPP
     for interface in config['interface']:
         if interface not in config['vpp_ifaces']:
-            raise ConfigError(f'{interface} must be a VPP interface for sFlow monitoring')
+            raise ConfigError(
+                f'{interface} must be a VPP interface for sFlow monitoring'
+            )
 
     # Verify sample rate is a positive integer
     if 'sample_rate' in config:
@@ -104,7 +106,9 @@ def verify(config):
 
     # Verify that system sflow has enable-vpp defined
     if 'system_sflow' not in config or 'vpp' not in config.get('system_sflow', {}):
-        raise ConfigError('sFlow enable-vpp must be defined under system sflow configuration')
+        raise ConfigError(
+            'sFlow enable-vpp must be defined under system sflow configuration'
+        )
 
 
 def generate(config):
