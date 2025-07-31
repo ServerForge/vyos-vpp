@@ -15,8 +15,6 @@
 
 from vyos import ConfigError
 from vyos.config import Config
-from vyos.configdiff import Diff
-from vyos.configdict import node_changed
 from vyos.vpp.utils import cli_ifaces_list
 from vyos.vpp import VPPControl
 
@@ -62,14 +60,6 @@ def get_config(config=None) -> dict:
     if not config:
         config['remove'] = True
         return config
-
-    config_changed = node_changed(
-        conf,
-        base,
-        key_mangling=('-', '_'),
-        recursive=True,
-        expand_nodes=Diff.DELETE | Diff.ADD,
-    )
 
     # Add list of VPP interfaces to the config
     config.update({'vpp_ifaces': cli_ifaces_list(conf)})
